@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -11,12 +10,29 @@ import (
 	//"github.com/stretchr/testify/require"
 )
 
+
+// Запрос сформирован корректно, сервис возвращает код ответа 200 и тело ответа не пустое
+func TestRequestIsCorrect(t *testing.T) {
+	req := httptest.NewRequest("GET", "/cafe?count=2&city=moscow", nil)
+
+	responseRecorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(mainHandle)
+	handler.ServeHTTP(responseRecorder, req)
+
+	expCode := http.StatusOK
+
+	assert.Equal(t, expCode, responseRecorder.Code)
+
+	assert.NotEmpty(t, responseRecorder.Body)
+}
+
+// Если в параметре count указано больше, чем есть всего, должны вернуться все доступные кафе
 func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 	req := httptest.NewRequest("GET", "/cafe?count=10&city=moscow", nil)
 
-    responseRecorder := httptest.NewRecorder()
-    handler := http.HandlerFunc(mainHandle)
-    handler.ServeHTTP(responseRecorder, req)
+	responseRecorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(mainHandle)
+	handler.ServeHTTP(responseRecorder, req)
 
 	expCount := 4
 	expCode := http.StatusOK
