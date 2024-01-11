@@ -23,7 +23,7 @@ func createRequest(url string) *httptest.ResponseRecorder {
 // Город, который передаётся в параметре city, не поддерживается. 
 // Сервис возвращает код ответа 400 и ошибку wrong count value в теле ответа.
 func TestIncorrectCityInRequest(t *testing.T) {
-	responseRecorder := createRequest("/cafe?count=2&city=tokio")
+	responseRecorder := createRequest("/cafe?count=2&city=UnExistsCity")
 
 	expCode := http.StatusBadRequest
 	expAnswer := "wrong city value"
